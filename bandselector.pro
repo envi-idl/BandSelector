@@ -1,4 +1,6 @@
+;h+
 ; Copyright (c)  Exelis Visual Information Solutions, Inc., a subsidiary of Harris Corporation
+;h-
 
 ;+
 ; :Description:
@@ -37,6 +39,9 @@
 ;    OUTPUT_BANDS: out, required, type=orderedhash
 ;      This contains a key-value pair of band name and the zero-based index
 ;      for what band in the raster represents that wavelength.
+;    QUIET: in, optional, type=boolean, default=false
+;      Optionally specify this keyword to have the routine silently
+;      process errors and return an empty orderedhash in `OUTPUT_BANDS`.
 ;
 ; :Author: Zachary Norman - GitHub: znorman-harris
 ;-
@@ -44,6 +49,7 @@ pro bandSelector,$
   INPUT_RASTER = input_raster,$
   BLUE = blue,$
   GREEN = green,$
+  QUIET = quiet,$
   RED = red,$
   NIR = nir,$
   SWIR1 = swir1,$
@@ -80,19 +86,35 @@ pro bandSelector,$
 
   ;make sure our input raster was specified
   if (input_Raster eq !NULL) then begin
-    message, 'INPUT_RASTER not specified, required!'
+    if ~keyword_set(quiet) then begin
+      message, 'INPUT_RASTER not specified, required!'
+    endif else begin
+      return
+    endelse
   endif
   if ~isa(input_raster, 'ENVIRASTER') then begin
-    message, 'INPUT_RASTER specified, but is not of type ENVIRaster, required!'
+    if ~keyword_set(quiet) then begin
+      message, 'INPUT_RASTER specified, but is not of type ENVIRaster, required!'
+    endif else begin
+      return
+    endelse
   endif
 
   ;make sure our raster has wavelength information
   if ~input_raster.METADATA.hasTag('wavelength units') then begin
-    message, 'INPUT_RASTER does not have valid wavelength unit metadata, required.'
+    if ~keyword_set(quiet) then begin
+      message, 'INPUT_RASTER does not have valid wavelength unit metadata, required.'
+    endif else begin
+      return
+    endelse
   endif
   wavelength_units = input_raster.metadata['wavelength units']
   if ~input_raster.METADATA.hasTag('wavelength') then begin
-    message, 'INPUT_RASTER does not have valid wavelength metadata, required.'
+    if ~keyword_set(quiet) then begin
+      message, 'INPUT_RASTER does not have valid wavelength metadata, required.'
+    endif else begin
+      return
+    endelse
   endif
   wavelengths = input_raster.metadata['wavelength']
 
@@ -109,7 +131,13 @@ pro bandSelector,$
     'cm'          : factor = 10000000.0
     'meters'      : factor = 100000000.0
     'm'           : factor = 100000000.0
-    else: message, 'Unknown wavelength type of "' + strtrim(wavelength_units,2) + '" in raster wavelength metadata.'
+    else: begin
+      if ~keyword_set(quiet) then begin
+        message, 'Unknown wavelength type of "' + strtrim(wavelength_units,2) + '" in raster wavelength metadata.'
+      endif else begin
+        return
+      endelse
+    end
   endcase
 
   ;scale wavelengths accordingly
