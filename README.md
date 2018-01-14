@@ -8,7 +8,7 @@ The use case for the VisualizationSelector is for automated generation of a visu
 
 ## General Usage
 
-Both procedures return an orderedhash of the bands that match the user request. If you want to check to see if a band is present, then you simply need to use the ```idl orderedhash.hasKey(tag)``` method where `tag` corresponds to the keyword name that was set. For example, to check and see if a raster has the red band you would do:
+Both procedures return an orderedhash of the bands that match the user request. If you want to check to see if a band is present, then you simply need to use the `orderedhash.hasKey(tag)` method where `tag` corresponds to the keyword name that was set. For example, to check and see if a raster has the red band you would do:
 
 ```idl
 ;get the red band from our raster
