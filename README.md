@@ -121,6 +121,6 @@ In the IDL console you should then see the following:
 
 ## License
 
-(c) 2017 Exelis Visual Information Solutions, Inc., a subsidiary of Harris Corporation.
+Licensed under MIT. See LICENSE.txt for additional details and information.
 
-See LICENSE.txt for additional details and information.
+(c) 2017 Exelis Visual Information Solutions, Inc., a subsidiary of Harris Corporation.
